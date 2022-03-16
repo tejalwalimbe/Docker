@@ -1,0 +1,25 @@
+FROM python:3.8
+RUN apt-get upgrade -y
+RUN apt-get -y update
+RUN  apt-get install -y  python3-pip
+RUN  apt-get install -y default-libmysqlclient-dev
+RUN pip install --upgrade pip
+RUN pip3 install django
+RUN apt install gunicorn
+#RUN pip3 install virtualenv
+RUN pip3 install django-environ
+RUN  pip3 install mysqlclient
+RUN mkdir Code-Deploy
+COPY /Code-Deploy /Code-Deploy
+WORKDIR /Code-Deploy
+RUN pip3 install -r requirements.txt
+ENV DATABASE_TYPE=mysql
+ENV DATABASE_NAME=chatapp
+ENV USER_NAME=admin
+ENV PASSWORD=admin123
+ENV HOST_NAME=mychatapp.ct0qune1e5bk.ap-south-1.rds.amazonaws.com
+ENV PORT=3306
+EXPOSE 8000
+WORKDIR /Code-Deploy/fundoo/
+CMD python3 manage.py migrate
+CMD ["python", "manage.py", "runsserver", "0.0.0.0:8000"]
